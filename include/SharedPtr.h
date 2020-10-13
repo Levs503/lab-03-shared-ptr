@@ -5,6 +5,7 @@
 #ifndef TEMPLATE_SHAREDPTR_H
 #define TEMPLATE_SHAREDPTR_H
 #include "SharedPtr.h"
+#include <cstddef>
 
 template <typename T>
 class SharedPtr {
