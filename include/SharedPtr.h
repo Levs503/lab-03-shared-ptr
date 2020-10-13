@@ -6,7 +6,8 @@
 #define TEMPLATE_SHAREDPTR_H
 #include "SharedPtr.h"
 #include <cstddef>
-
+#inclide<map>
+#include <atomic>
 template <typename T>
 class SharedPtr {
  public:
