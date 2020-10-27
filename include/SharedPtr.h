@@ -11,7 +11,6 @@
 template <typename T>
 class SharedPtr {
  public:
-  SharedPtr(T&&);
   SharedPtr();
   SharedPtr(T* ptr);
   SharedPtr(const SharedPtr& r);
@@ -34,20 +33,15 @@ class SharedPtr {
   auto use_count() const -> size_t;
 
  private:
-  std::atomic_size_t* counter;
   T* object;
+  std::atomic_size_t* counter;
+
 };
 
 template <class T>
-SharedPtr<T>::SharedPtr(T&& obj) : object(&obj) {
-  *counter = 1;
-}
-template <class T>
-SharedPtr<T>::SharedPtr() : object(nullptr) {
-  *counter = 0;
-}
+SharedPtr<T>::SharedPtr() : object(nullptr),  counter(new std::atomic_size_t)  {}
 template <typename T>
-SharedPtr<T>::SharedPtr(T* ptr) : object(ptr) {
+SharedPtr<T>::SharedPtr(T* ptr) : object(ptr), counter(new std::atomic_size_t) {
   *counter = 1;
 }
 template <typename T>

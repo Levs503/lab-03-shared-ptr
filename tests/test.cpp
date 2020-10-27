@@ -13,13 +13,16 @@ struct check {
   ~check() { bool_ = true; }
 };
 
-TEST(SharedPtr, OperatorBool) {
-  ASSERT_FALSE(SharedPtr<int>());
-  ASSERT_TRUE(SharedPtr<int>(1243));
+TEST(SharedPtr, Bool) {
+  SharedPtr<int> ptr1;
+  SharedPtr<int> ptr2(new int(1234));
+  ASSERT_FALSE(ptr1);
+  ASSERT_TRUE(ptr2);
 }
 
 TEST(SharedPtr, Dereference) {
-  const SharedPtr<std::string> sharedPointer("Hello");
+  std::string* a = new std::string("hello");
+  const SharedPtr<std::string> sharedPointer(a);
   ASSERT_EQ(*sharedPointer, "Hello");
 }
 
