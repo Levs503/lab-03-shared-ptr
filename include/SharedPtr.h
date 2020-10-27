@@ -34,7 +34,7 @@ class SharedPtr {
   auto use_count() const -> size_t;
 
  private:
-  std::atomic_int* counter;
+  std::atomic_size_t* counter;
   T* object;
 };
 
@@ -58,6 +58,7 @@ template <typename T>
 SharedPtr<T>::SharedPtr(const SharedPtr& r) {
   object = r.object;
   counter = r.counter;
+  if(counter)
   (*counter)++;
 }
 template <typename T>
@@ -80,7 +81,7 @@ SharedPtr<T>::operator bool() const {
 }
 template <typename T>
 auto SharedPtr<T>::operator*() const -> T& {
-  return *object;
+    return *object;
 }
 
 template <typename T>
