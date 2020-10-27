@@ -21,7 +21,7 @@ TEST(SharedPtr, Bool) {
 }
 
 TEST(SharedPtr, Dereference) {
-  std::string* a = new std::string("hello");
+  std::string* a = new std::string("Hello");
   const SharedPtr<std::string> sharedPointer(a);
   ASSERT_EQ(*sharedPointer, "Hello");
 }
@@ -47,7 +47,7 @@ TEST(SharedPointer, CopyConstructor) {
       ASSERT_EQ(shared2->value, 223);
       ASSERT_FALSE(bool_);
     }
-    ASSERT_EQ(shared->value, 1467);
+    ASSERT_EQ(shared->value, 223);
     ASSERT_FALSE(bool_);
   }
   ASSERT_TRUE(bool_);
@@ -81,7 +81,7 @@ TEST(SharedPointer, Moveconstructor) {
 TEST(SharedPtr, Copy) {
   bool bool_ = false;
   {
-    SharedPtr<check> shared(new check{bool_, 4728});
+    SharedPtr<check> shared(new check{bool_, 1111111});
     ASSERT_EQ(shared->value, 1111111);
     {
       SharedPtr<check> shared2;

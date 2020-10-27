@@ -65,7 +65,8 @@ SharedPtr<T>::SharedPtr(SharedPtr&& r) {
 template <typename T>
 SharedPtr<T>::~SharedPtr() {
   if (object) {
-    if (*counter == 1) delete object;
+    (*counter)--;
+    if (*counter == 0) delete object;
   }
 }
 template <typename T>
