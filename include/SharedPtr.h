@@ -38,7 +38,7 @@ class SharedPtr {
 };
 
 template <class T>
-SharedPtr<T>::SharedPtr() : object(nullptr), counter(new std::atomic_size_t) {}
+SharedPtr<T>::SharedPtr() : object(nullptr), counter(nullptr) {}
 template <typename T>
 SharedPtr<T>::SharedPtr(T* ptr) : object(ptr), counter(new std::atomic_size_t) {
   *counter = 1;
