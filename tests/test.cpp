@@ -4,7 +4,6 @@
 
 #include <string>
 
-#include "../include/SharedPtr.h"
 #include "SharedPtr.h"
 
 struct check {
@@ -14,22 +13,20 @@ struct check {
   ~check() { bool_ = true; }
 };
 
-
-
 TEST(SharedPtr, OperatorBool) {
   ASSERT_FALSE(SharedPtr<std::string>());
   ASSERT_TRUE(SharedPtr<std::string>("fdhgjk"));
 }
 
 TEST(SharedPtr, Dereference) {
-const SharedPtr<std::string> sharedPointer("Hello");
-ASSERT_EQ(*sharedPointer, "Hello");
+  const SharedPtr<std::string> sharedPointer("Hello");
+  ASSERT_EQ(*sharedPointer, "Hello");
 }
 
 TEST(SharedPtr, Constructor1) {
   bool bool_ = false;
   {
-    const SharedPointer<check> shared(new check{bool_, 1234});
+    const SharedPtr<check> shared(new check{bool_, 1234});
     ASSERT_EQ(shared->value, 1234);
     ASSERT_FALSE(bool_);
   }
@@ -54,28 +51,28 @@ TEST(SharedPointer, CopyConstructor) {
 }
 
 TEST(SharedPointer, Move) {
-bool bool_ = false;
-{
-SharedPtr<check> shared;
-{
-SharedPtr<check> shared2 = SharedPtr<check>(new check{bool_, 12221});
-shared = std::move(shared2);
-ASSERT_FALSE(shared2);
-}
-ASSERT_EQ(shared->value, 12221);
-ASSERT_FALSE(bool_);
-}
-ASSERT_TRUE(bool_);
+  bool bool_ = false;
+  {
+    SharedPtr<check> shared;
+    {
+      SharedPtr<check> shared2 = SharedPtr<check>(new check{bool_, 12221});
+      shared = std::move(shared2);
+      ASSERT_FALSE(shared2);
+    }
+    ASSERT_EQ(shared->value, 12221);
+    ASSERT_FALSE(bool_);
+  }
+  ASSERT_TRUE(bool_);
 }
 
 TEST(SharedPointer, Moveconstructor) {
-bool bool_ = false;
-{
-SharedPtr<check> shared(SharedPtr<check>(new check{bool_, 1234}));
-ASSERT_EQ(shared->value, 1234);
-ASSERT_FALSE(bool_);
-}
-ASSERT_TRUE(bool_);
+  bool bool_ = false;
+  {
+    SharedPtr<check> shared(SharedPtr<check>(new check{bool_, 1234}));
+    ASSERT_EQ(shared->value, 1234);
+    ASSERT_FALSE(bool_);
+  }
+  ASSERT_TRUE(bool_);
 }
 
 TEST(SharedPtr, Copy) {
@@ -95,5 +92,3 @@ TEST(SharedPtr, Copy) {
   }
   ASSERT_TRUE(bool_);
 }
-
-
