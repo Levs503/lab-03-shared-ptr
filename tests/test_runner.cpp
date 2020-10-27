@@ -1,3 +1,4 @@
+//Copyright [2020] <Lev Semkov>
 //
 // Created by levs503 on 28.10.2020.
 //
