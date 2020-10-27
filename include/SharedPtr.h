@@ -12,6 +12,7 @@
 template <typename T>
 class SharedPtr {
  public:
+  SharedPtr(T&&);
   SharedPtr();
   SharedPtr(T* ptr);
   SharedPtr(const SharedPtr& r);
@@ -38,7 +39,11 @@ class SharedPtr {
   T* object;
 };
 
-#include <cstddef>
+template <class T>
+SharedPtr<T>::SharedPtr(T&& obj) {
+  object = &obj;
+  listOfAddress[object]++;
+}
 template <class T>
 SharedPtr<T>::SharedPtr() {
   object = nullptr;
