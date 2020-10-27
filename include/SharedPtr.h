@@ -66,7 +66,10 @@ template <typename T>
 SharedPtr<T>::~SharedPtr() {
   if (object) {
     (*counter)--;
-    if (*counter == 0) delete object;
+    if (*counter == 0) {
+      delete object;
+      delete counter;
+    }
   }
 }
 template <typename T>
@@ -93,6 +96,7 @@ void SharedPtr<T>::reset() {
     (*counter)--;
     if (counter == 0) {
       delete object;
+      delete counter;
     }
     object = nullptr;
     counter = nullptr;
@@ -121,6 +125,7 @@ auto SharedPtr<T>::operator=(const SharedPtr& r) -> SharedPtr& {
       (*counter)--;
       if (counter == 0) {
         delete object;
+        delete counter;
       }
     }
     object = r.object;
@@ -136,6 +141,7 @@ auto SharedPtr<T>::operator=(SharedPtr&& r) -> SharedPtr& {
       (*counter)--;
       if (counter == 0) {
         delete object;
+        delete counter;
       }
     }
     object = r.object;
