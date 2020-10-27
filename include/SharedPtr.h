@@ -35,11 +35,10 @@ class SharedPtr {
  private:
   T* object;
   std::atomic_size_t* counter;
-
 };
 
 template <class T>
-SharedPtr<T>::SharedPtr() : object(nullptr),  counter(new std::atomic_size_t)  {}
+SharedPtr<T>::SharedPtr() : object(nullptr), counter(new std::atomic_size_t) {}
 template <typename T>
 SharedPtr<T>::SharedPtr(T* ptr) : object(ptr), counter(new std::atomic_size_t) {
   *counter = 1;
@@ -52,8 +51,7 @@ template <typename T>
 SharedPtr<T>::SharedPtr(const SharedPtr& r) {
   object = r.object;
   counter = r.counter;
-  if(counter)
-  (*counter)++;
+  if (counter) (*counter)++;
 }
 template <typename T>
 SharedPtr<T>::SharedPtr(SharedPtr&& r) {
@@ -79,7 +77,7 @@ SharedPtr<T>::operator bool() const {
 }
 template <typename T>
 auto SharedPtr<T>::operator*() const -> T& {
-    return *object;
+  return *object;
 }
 
 template <typename T>
@@ -104,14 +102,15 @@ void SharedPtr<T>::reset() {
 }
 template <typename T>
 void SharedPtr<T>::reset(T* ptr) {
-  if (object != ptr) {
-    (*counter)--;
-    if (counter == 0) {
-      delete object;
-    }
-    object = ptr;
-    (*counter) = 1;
+  if(counter)
+  (*counter)--;
+  if (counter == 0) {
+    delete object;
+    delete counter;
   }
+  counter = new std::atomic_size_t;
+  object = ptr;
+  (*counter) = 1;
 }
 template <typename T>
 void SharedPtr<T>::swap(SharedPtr& r) {
