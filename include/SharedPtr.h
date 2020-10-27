@@ -8,7 +8,6 @@
 #include <cstddef>
 #include <map>
 
-#include "SharedPtr.h"
 template <typename T>
 class SharedPtr {
  public:
@@ -35,23 +34,21 @@ class SharedPtr {
   auto use_count() const -> size_t;
 
  private:
-  static std::map<void*, std::atomic_int> listOfAddress;
+  std::atomic_int* counter;
   T* object;
 };
 
 template <class T>
-SharedPtr<T>::SharedPtr(T&& obj) {
-  object = &obj;
-  listOfAddress[object]++;
+SharedPtr<T>::SharedPtr(T&& obj) : object(&obj) {
+  *counter = 1;
 }
 template <class T>
-SharedPtr<T>::SharedPtr() {
-  object = nullptr;
+SharedPtr<T>::SharedPtr() : object(nullptr) {
+  *counter = 0;
 }
 template <typename T>
-SharedPtr<T>::SharedPtr(T* ptr) {
-  object = ptr;
-  listOfAddress[ptr]++;
+SharedPtr<T>::SharedPtr(T* ptr) : object(ptr) {
+  *counter = 1;
 }
 template <typename T>
 auto SharedPtr<T>::get() -> T* {
@@ -60,18 +57,20 @@ auto SharedPtr<T>::get() -> T* {
 template <typename T>
 SharedPtr<T>::SharedPtr(const SharedPtr& r) {
   object = r.object;
-  listOfAddress[r.object]++;
+  counter = r.counter;
+  (*counter)++;
 }
 template <typename T>
 SharedPtr<T>::SharedPtr(SharedPtr&& r) {
   object = r.object;
   r.object = nullptr;
+  counter = r.counter;
+  r.counter = nullptr;
 }
 template <typename T>
 SharedPtr<T>::~SharedPtr() {
-  listOfAddress[object]--;
-  if (listOfAddress[object] == 0) {
-    delete object;
+  if (object) {
+    if (*counter == 1) delete object;
   }
 }
 template <typename T>
@@ -90,39 +89,64 @@ auto SharedPtr<T>::operator->() const -> T* {
 }
 template <typename T>
 auto SharedPtr<T>::use_count() const -> size_t {
-  return listOfAddress[object];
+  return *counter;
 }
 template <typename T>
 void SharedPtr<T>::reset() {
   if (object) {
-    listOfAddress[object]--;
+    (*counter)--;
+    if (counter == 0) {
+      delete object;
+    }
+    object = nullptr;
+    counter = nullptr;
   }
-  object = nullptr;
 }
 template <typename T>
 void SharedPtr<T>::reset(T* ptr) {
-  listOfAddress[object]--;
-  object = ptr;
-  listOfAddress[object]++;
+  if (object != ptr) {
+    (*counter)--;
+    if (counter == 0) {
+      delete object;
+    }
+    object = ptr;
+    (*counter) = 1;
+  }
 }
 template <typename T>
 void SharedPtr<T>::swap(SharedPtr& r) {
-  T* buf = object;
-  object = r.object;
-  r.object = buf;
+  std::swap(object, r.object);
+  std::swap(counter, r.pairOfAddress);
 }
 template <typename T>
 auto SharedPtr<T>::operator=(const SharedPtr& r) -> SharedPtr& {
-  listOfAddress[r.object]--;
-  object = r.object;
-  listOfAddress[object]++;
+  if (&r != this) {
+    if (object) {
+      (*counter)--;
+      if (counter == 0) {
+        delete object;
+      }
+    }
+    object = r.object;
+    counter = r.counter;
+    if (counter) (*counter)++;
+  }
   return *this;
 }
 template <typename T>
 auto SharedPtr<T>::operator=(SharedPtr&& r) -> SharedPtr& {
-  object = r.object;
-  listOfAddress[object]++;
-  r.reset();
+  if (&r != this) {
+    if (object) {
+      (*counter)--;
+      if (counter == 0) {
+        delete object;
+      }
+    }
+    object = r.object;
+    counter = r.counter;
+    r.object = nullptr;
+    r.counter = nullptr;
+  }
   return *this;
 }
 
