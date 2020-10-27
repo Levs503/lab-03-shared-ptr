@@ -15,12 +15,12 @@ struct check {
 
 TEST(SharedPtr, OperatorBool) {
   ASSERT_FALSE(SharedPtr<std::string>());
-  ASSERT_TRUE(SharedPtr<std::string>("fdhgjk"));
+  ASSERT_TRUE(SharedPtr<std::string>((std::string)"fdhgjk"));
 }
 
 TEST(SharedPtr, Dereference) {
-  const SharedPtr<std::string> sharedPointer("Hello");
-  ASSERT_EQ(*sharedPointer, "Hello");
+  const SharedPtr<int> sharedPointer((std::string)"Hello");
+  ASSERT_EQ(*sharedPointer, (std::string)"Hello");
 }
 
 TEST(SharedPtr, Constructor1) {
